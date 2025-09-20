@@ -83,8 +83,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 ## 🙏 Agradecimientos
 
 - [OMDB API](https://www.omdbapi.com/) por proporcionar los datos.
-- Comunidad de desarrolladores por inspiración.
-
+- Guillermo Cochrane y Emanuel  Perna por inspiración  de sabado a la tarde y los mates 🧉 🚀
 ## 📞 Contacto
 
 Si tienes preguntas o sugerencias, abre un issue en GitHub.

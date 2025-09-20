@@ -1128,12 +1128,31 @@
             <span class="stat-label">Pendientes</span>
           </div>
           <div class="stat-item">
+            <span id="totalEpisodesCount" class="stat-number">0</span>
+            <span class="stat-label">Episodios Totales</span>
+          </div>
+          <div class="stat-item">
+            <span id="seenEpisodesCount" class="stat-number">0</span>
+            <span class="stat-label">Episodios Vistos</span>
+          </div>
+          <div class="stat-item">
+            <span id="pendingEpisodesCount" class="stat-number">0</span>
+            <span class="stat-label">Episodios Pendientes</span>
+          </div>
+          <div class="stat-item">
+            <span id="episodesPercentage" class="stat-number">0%</span>
+            <span class="stat-label">Progreso Episodios</span>
+            <div class="progress-bar">
+              <div id="episodesProgressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="stat-item">
             <span id="searchResultsCount" class="stat-number">0</span>
             <span class="stat-label">Últimos Resultados</span>
           </div>
           <div class="stat-item">
             <span id="completionPercentage" class="stat-number">0%</span>
-            <span class="stat-label">Progreso</span>
+            <span class="stat-label">Progreso General</span>
             <div class="progress-bar">
               <div id="progressFill" class="progress-fill" style="width: 0%"></div>
             </div>
@@ -1419,7 +1438,21 @@
     const seen = library.filter(item => item.seen);
     const pending = library.filter(item => !item.seen);
     
-    // Calcular porcentaje de progreso
+    // Calcular estadísticas de episodios
+    let totalEpisodes = 0;
+    let seenEpisodes = 0;
+    
+    series.forEach(serie => {
+      if (serie.totals) {
+        totalEpisodes += serie.totals.total || 0;
+        seenEpisodes += serie.totals.seen || 0;
+      }
+    });
+    
+    const pendingEpisodes = totalEpisodes - seenEpisodes;
+    const episodesPercentage = totalEpisodes > 0 ? Math.round((seenEpisodes / totalEpisodes) * 100) : 0;
+    
+    // Calcular porcentaje de progreso general
     const totalItems = library.length;
     const seenItems = seen.length;
     const percentage = totalItems > 0 ? Math.round((seenItems / totalItems) * 100) : 0;
@@ -1429,14 +1462,22 @@
     $('#totalSeriesCount').textContent = series.length;
     $('#seenCount').textContent = seenItems;
     $('#pendingCount').textContent = pending.length;
+    $('#totalEpisodesCount').textContent = totalEpisodes;
+    $('#seenEpisodesCount').textContent = seenEpisodes;
+    $('#pendingEpisodesCount').textContent = pendingEpisodes;
+    $('#episodesPercentage').textContent = episodesPercentage + '%';
     $('#searchResultsCount').textContent = searchResults.length;
     $('#completionPercentage').textContent = percentage + '%';
     
-    // Actualizar barra de progreso
+    // Actualizar barra de progreso general
     const progressFill = $('#progressFill');
     progressFill.style.width = percentage + '%';
     
-    // Aplicar clases según el progreso (usando los colores que pediste)
+    // Actualizar barra de progreso de episodios
+    const episodesProgressFill = $('#episodesProgressFill');
+    episodesProgressFill.style.width = episodesPercentage + '%';
+    
+    // Aplicar clases según el progreso general
     progressFill.className = 'progress-fill';
     if (percentage >= 80) {
       progressFill.classList.add('high');
@@ -1446,13 +1487,26 @@
       progressFill.classList.add('low');
     }
     
+    // Aplicar clases según el progreso de episodios
+    episodesProgressFill.className = 'progress-fill';
+    if (episodesPercentage >= 80) {
+      episodesProgressFill.classList.add('high');
+    } else if (episodesPercentage >= 50) {
+      episodesProgressFill.classList.add('medium');
+    } else {
+      episodesProgressFill.classList.add('low');
+    }
+    
     // Aplicar clases a elementos según valores
     const pendingElement = $('#pendingCount').parentElement;
     const seenElement = $('#seenCount').parentElement;
     const completionElement = $('#completionPercentage').parentElement;
+    const seenEpisodesElement = $('#seenEpisodesCount').parentElement;
+    const pendingEpisodesElement = $('#pendingEpisodesCount').parentElement;
+    const episodesPercentageElement = $('#episodesPercentage').parentElement;
     
     // Remover clases previas
-    [pendingElement, seenElement, completionElement].forEach(el => {
+    [pendingElement, seenElement, completionElement, seenEpisodesElement, pendingEpisodesElement, episodesPercentageElement].forEach(el => {
       el.classList.remove('warning', 'success', 'danger');
     });
     
@@ -1473,6 +1527,25 @@
       seenElement.classList.add('warning'); // Ámbar para ~80 vistas
     } else if (seenItems >= 100) {
       seenElement.classList.add('success'); // Verde para >100 vistas
+    }
+    
+    // Colores para estadísticas de episodios
+    if (seenEpisodes >= 200) {
+      seenEpisodesElement.classList.add('warning'); // Ámbar para muchos episodios vistos
+    } else if (seenEpisodes >= 300) {
+      seenEpisodesElement.classList.add('success'); // Verde para muchos episodios
+    }
+    
+    if (pendingEpisodes > 100) {
+      pendingEpisodesElement.classList.add('warning'); // Ámbar para muchos pendientes
+    } else if (pendingEpisodes > 200) {
+      pendingEpisodesElement.classList.add('danger'); // Rojo para demasiados pendientes
+    }
+    
+    if (episodesPercentage >= 80) {
+      episodesPercentageElement.classList.add('warning'); // Ámbar para ~80%
+    } else if (episodesPercentage >= 90) {
+      episodesPercentageElement.classList.add('success'); // Verde para >90%
     }
   }
 
