@@ -343,7 +343,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 
 **⚡ Powered by Diego Markiewicz ⚡**  
 📧 Email: [dieghard@gmail.com](mailto:dieghard@gmail.com)  
-🐙 GitHub: [@tu-usuario](https://github.com/tu-usuario)
+
 
 ## 📞 Contacto y Soporte
 
