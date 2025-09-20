@@ -648,6 +648,103 @@
       color: #fff;
       border: 1px solid #ff4444;
       padding: 0.3rem 0.8rem;
+    }
+
+    /* Estilos para panel de estadísticas */
+    .stats-panel {
+      background: linear-gradient(135deg, #111, #222, #111);
+      border: 2px solid #ffb000;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 0 15px rgba(255, 176, 0, 0.3);
+    }
+
+    .stats-panel h3 {
+      color: #ffb000;
+      margin: 0 0 1rem 0;
+      font-size: 1.3rem;
+      text-align: center;
+      text-shadow: 0 0 10px #ffb000;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-item {
+      background: #333;
+      border: 1px solid #ffb000;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 176, 0, 0.2);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ffb000;
+      text-shadow: 0 0 10px #ffb000;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-item.warning .stat-number {
+      color: #ff8c00;
+      text-shadow: 0 0 10px #ff8c00;
+    }
+
+    .stat-item.success .stat-number {
+      color: #00ff88;
+      text-shadow: 0 0 10px #00ff88;
+    }
+
+    .stat-item.danger .stat-number {
+      color: #ff4444;
+      text-shadow: 0 0 10px #ff4444;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #444;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffb000, #ff8c00);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-fill.high {
+      background: linear-gradient(90deg, #00ff88, #00cc66);
+    }
+
+    .progress-fill.medium {
+      background: linear-gradient(90deg, #ff8c00, #ffb000);
+    }
+
+    .progress-fill.low {
+      background: linear-gradient(90deg, #ff4444, #ff6666);
       font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.3s;
@@ -934,6 +1031,41 @@
     </section>
     <section id="librarySection">
       <h2>Mi Biblioteca</h2>
+      
+      <!-- Panel de Estadísticas -->
+      <div id="statsPanel" class="stats-panel">
+        <h3>📊 Estadísticas de tu Biblioteca</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span id="totalMoviesCount" class="stat-number">0</span>
+            <span class="stat-label">Películas</span>
+          </div>
+          <div class="stat-item">
+            <span id="totalSeriesCount" class="stat-number">0</span>
+            <span class="stat-label">Series</span>
+          </div>
+          <div class="stat-item">
+            <span id="seenCount" class="stat-number">0</span>
+            <span class="stat-label">Vistas</span>
+          </div>
+          <div class="stat-item">
+            <span id="pendingCount" class="stat-number">0</span>
+            <span class="stat-label">Pendientes</span>
+          </div>
+          <div class="stat-item">
+            <span id="searchResultsCount" class="stat-number">0</span>
+            <span class="stat-label">Últimos Resultados</span>
+          </div>
+          <div class="stat-item">
+            <span id="completionPercentage" class="stat-number">0%</span>
+            <span class="stat-label">Progreso</span>
+            <div class="progress-bar">
+              <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <div id="libraryControls">
         <button id="exportBtn" class="btn">Exportar Biblioteca</button>
         <button id="importBtn" class="btn">Importar Biblioteca</button>
@@ -1197,6 +1329,74 @@
     renderLibrary($('#librarySearchInput').value);
   }
 
+  // Función para actualizar estadísticas
+  function updateStats() {
+    const library = state.library;
+    const searchResults = state.searchResults || [];
+    
+    // Contar películas y series
+    const movies = library.filter(item => item.type === 'movie');
+    const series = library.filter(item => item.type === 'series');
+    const seen = library.filter(item => item.seen);
+    const pending = library.filter(item => !item.seen);
+    
+    // Calcular porcentaje de progreso
+    const totalItems = library.length;
+    const seenItems = seen.length;
+    const percentage = totalItems > 0 ? Math.round((seenItems / totalItems) * 100) : 0;
+    
+    // Actualizar elementos del DOM
+    $('#totalMoviesCount').textContent = movies.length;
+    $('#totalSeriesCount').textContent = series.length;
+    $('#seenCount').textContent = seenItems;
+    $('#pendingCount').textContent = pending.length;
+    $('#searchResultsCount').textContent = searchResults.length;
+    $('#completionPercentage').textContent = percentage + '%';
+    
+    // Actualizar barra de progreso
+    const progressFill = $('#progressFill');
+    progressFill.style.width = percentage + '%';
+    
+    // Aplicar clases según el progreso (usando los colores que pediste)
+    progressFill.className = 'progress-fill';
+    if (percentage >= 80) {
+      progressFill.classList.add('high');
+    } else if (percentage >= 50) {
+      progressFill.classList.add('medium');
+    } else {
+      progressFill.classList.add('low');
+    }
+    
+    // Aplicar clases a elementos según valores
+    const pendingElement = $('#pendingCount').parentElement;
+    const seenElement = $('#seenCount').parentElement;
+    const completionElement = $('#completionPercentage').parentElement;
+    
+    // Remover clases previas
+    [pendingElement, seenElement, completionElement].forEach(el => {
+      el.classList.remove('warning', 'success', 'danger');
+    });
+    
+    // Aplicar colores según los valores (usando ámbar para ~80 como pediste)
+    if (pending.length > 80) {
+      pendingElement.classList.add('warning'); // Ámbar para más de 80 pendientes
+    } else if (pending.length > 40) {
+      pendingElement.classList.add('danger'); // Rojo para muchas pendientes
+    }
+    
+    if (percentage >= 80) {
+      completionElement.classList.add('warning'); // Ámbar para ~80%
+    } else if (percentage >= 90) {
+      completionElement.classList.add('success'); // Verde para >90%
+    }
+    
+    if (seenItems >= 80) {
+      seenElement.classList.add('warning'); // Ámbar para ~80 vistas
+    } else if (seenItems >= 100) {
+      seenElement.classList.add('success'); // Verde para >100 vistas
+    }
+  }
+
   // Hacer las funciones globales
   window.filterLibraryByGenre = filterLibraryByGenre;
   window.clearLibraryGenreFilter = clearLibraryGenreFilter;
@@ -1296,6 +1496,9 @@
         </div>`;
       cont.appendChild(card);
     });
+    
+    // Actualizar estadísticas
+    updateStats();
   }
 
   async function renderResults(results) {
@@ -1351,12 +1554,16 @@
       cont.innerHTML = '<p style="color: #ffb000; text-align: center; font-family: \'Share Tech Mono\', monospace; font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px #ffb000;">NO SE ENCONTRARON RESULTADOS</p>';
       resultsEl.classList.remove('hidden');
     }
+    
+    // Actualizar estadísticas
+    updateStats();
   }
 
   // Event listeners
   document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded');
     renderLibrary();
+    updateStats(); // Inicializar estadísticas
 
     $('#searchForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1441,6 +1648,7 @@
               if (Array.isArray(importedLibrary)) {
                 state.library = importedLibrary;
                 store.set(state.library);
+                updateStats();
 
                 // Refrescar automáticamente la biblioteca
                 setTimeout(() => {
@@ -1508,6 +1716,7 @@
       const item = normalizeItem(full);
       state.library.push(item);
       store.set(state.library);
+      updateStats();
       renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
     } catch (error) {
       console.error('Error adding to library:', error);
@@ -1526,6 +1735,7 @@
         if (!itemToRemove) return;
         state.library = state.library.filter(i => i.imdbID !== id);
         store.set(state.library);
+        updateStats();
         renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
         break;
       case 'toggleMovie':
@@ -1536,6 +1746,7 @@
         } else {
           item.seen = false;
           store.set(state.library);
+          updateStats();
           renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
         }
         break;
@@ -1566,6 +1777,7 @@
       item.userRating = ratingInput.value ? parseFloat(ratingInput.value) : null;
       item.userComment = commentInput.value.trim();
       store.set(state.library);
+      updateStats();
       renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
       modal.style.display = 'none';
     };
