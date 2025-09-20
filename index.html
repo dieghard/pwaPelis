@@ -1063,6 +1063,76 @@
       color: #ffb000;
       padding: 2rem;
     }
+
+    /* Footer de créditos */
+    .developer-credit {
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 3rem;
+      background: linear-gradient(135deg, #000, #111, #000);
+      border-top: 2px solid #ffb000;
+      position: relative;
+    }
+
+    .developer-credit::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 176, 0, 0.05) 2px,
+        rgba(255, 176, 0, 0.05) 4px
+      );
+      pointer-events: none;
+    }
+
+    .powered-by {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #ffb000;
+      text-shadow: 0 0 10px #ffb000;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .developer-email {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .developer-email a {
+      color: #ccc;
+      text-decoration: none;
+      transition: all 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+
+    .developer-email a:hover {
+      color: #ffb000;
+      text-shadow: 0 0 5px #ffb000;
+      border-bottom-color: #ffb000;
+    }
+
+    .developer-emoji {
+      font-size: 1.2rem;
+      margin-left: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
   </style>
 </head>
 <body>
@@ -2218,6 +2288,16 @@
       </div>
     </div>
   </div>
+
+  <!-- Footer con crédito del desarrollador -->
+  <footer class="developer-credit">
+    <div class="powered-by">
+      Powered by Diego Markiewicz<span class="developer-emoji">⚡</span>
+    </div>
+    <div class="developer-email">
+      📧 <a href="mailto:dieghard@gmail.com">dieghard@gmail.com</a>
+    </div>
+  </footer>
 
 </body>
 </html>

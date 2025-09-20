@@ -64,7 +64,29 @@ Una aplicación web progresiva (PWA) para gestionar tu biblioteca personal de pe
 
 ## 📱 Capturas de Pantalla
 
-*(Agrega capturas aquí cuando publiques)*
+### Pantalla Principal
+![Pantalla Principal](screenshots/main-screen.png)
+*Interfaz principal con búsqueda y estadísticas*
+
+### Resultados de Búsqueda
+![Resultados de Búsqueda](screenshots/search-results.png)
+*Búsqueda de películas con chips de género clickeables*
+
+### Biblioteca Personal
+![Biblioteca Personal](screenshots/library.png)
+*Gestión de tu biblioteca con filtros y estadísticas detalladas*
+
+### Gestión de Episodios
+![Gestión de Episodios](screenshots/episodes-modal.png)
+*Modal para marcar episodios de series como vistos*
+
+### Versión Móvil
+![Versión Móvil](screenshots/mobile-view.png)
+*Diseño responsive adaptado para dispositivos móviles*
+
+### Panel de Estadísticas
+![Panel de Estadísticas](screenshots/stats-panel.png)
+*Estadísticas completas de películas, series y episodios*
 
 ## 🤝 Contribuir
 
@@ -84,11 +106,16 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 
 - [OMDB API](https://www.omdbapi.com/) por proporcionar los datos.
 - Guillermo Cochrane y Emanuel  Perna por inspiración  de sabado a la tarde y los mates 🧉 🚀
+
+---
+
+**Powered by Diego Markiewicz** ⚡  
+📧 Email: [dieghard@gmail.com](mailto:dieghard@gmail.com)
+
 ## 📞 Contacto
 
 Si tienes preguntas o sugerencias, abre un issue en GitHub.
 
 ---
 
-¡Disfruta gestionando tu biblioteca de películas y series! 🍿🎥</content>
-<parameter name="filePath">c:\Users\diegh\Desktop\pwaPelis\README.md
+¡Disfruta gestionando tu biblioteca de películas y series! 🍿🎥
