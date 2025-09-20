@@ -27,7 +27,7 @@ Una aplicación web progresiva (PWA) para gestionar tu biblioteca personal de pe
    cd mi-biblioteca-pelis
    ```
 
-2. Abre el archivo `pwa_omdb_biblioteca_de_pelis_y_series_html_css_js_en_1_archivo.html` en un servidor local.
+2. Abre el archivo `index.html` en un servidor local.
 
    **Opción 1: Usando Python**
    ```bash

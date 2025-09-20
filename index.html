@@ -1402,7 +1402,8 @@
   window.clearLibraryGenreFilter = clearLibraryGenreFilter;
 
   function posterUrl(poster) {
-    if (poster && poster !== 'N/A' && poster !== '') {
+    // Verificar si la URL parece válida
+    if (poster && poster !== 'N/A' && poster !== '' && !poster.includes('undefined') && poster.startsWith('http')) {
       return poster;
     }
     // Imagen de respaldo SVG
@@ -1494,6 +1495,7 @@
             <div class="bar" style="width:${seenPct}%"></div>
           </div>
         </div>`;
+      
       cont.appendChild(card);
     });
     
@@ -1547,6 +1549,7 @@
             <div class="chips">${genreChips(details?.Genre, true)}</div>
             <button class="btn" data-action="add" data-id="${item.imdbID}">Agregar a Biblioteca</button>
           </div>`;
+        
         cont.appendChild(card);
       }
       resultsEl.classList.remove('hidden');
@@ -1696,17 +1699,17 @@
       }
     });
 
-    // Manejar errores de carga de imágenes
+    // Event listener global para errores de imágenes más robusto
     document.addEventListener('error', (e) => {
       if (e.target.tagName === 'IMG' && e.target.classList.contains('poster')) {
-        console.log('Error cargando imagen:', e.target.src);
-        // Evitar bucle infinito: solo cambiar si no es ya una imagen de respaldo
+        console.log('Error de imagen detectado:', e.target.src);
         if (!e.target.src.includes('data:image/svg+xml')) {
-          e.target.src = posterUrl(null); // Usar la función posterUrl para imagen de respaldo
+          e.target.src = posterUrl(null);
           e.target.alt = 'Imagen no disponible';
+          console.log('Imagen reemplazada con placeholder');
         }
       }
-    }, true);
+    }, true); // Usar capture phase para más efectividad
   });
 
   async function addToLibrary(id) {
