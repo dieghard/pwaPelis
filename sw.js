@@ -1,7 +1,7 @@
 const CACHE_NAME = 'pwa-cache-v2';
 const urlsToCache = [
   '/',
-  '/pwa_omdb_biblioteca_de_pelis_y_series_html_css_js_en_1_archivo.html',
+  '/index.html',
   // Agregar otros recursos si es necesario
 ];
 

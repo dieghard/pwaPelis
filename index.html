@@ -485,6 +485,179 @@
       border: 1px solid #ffb000;
     }
 
+    .chip.clickable {
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .chip.clickable:hover {
+      background: #ffb000;
+      color: #000;
+      transform: translateY(-1px);
+    }
+
+    .chip.active {
+      background: #ffb000;
+      color: #000;
+      border-color: #ffb000;
+    }
+
+    .genre-filter-indicator {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
+      border: 2px solid #ffb000;
+      padding: 0.5rem 1rem;
+      border-radius: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .genre-filter-indicator span {
+      color: #ffb000;
+      font-size: 0.9rem;
+    }
+
+    .genre-filter-indicator strong {
+      color: #fff;
+    }
+
+    .clear-filter {
+      background: #ff4444;
+      color: #fff;
+      border: 1px solid #ff4444;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .clear-filter:hover {
+      background: #fff;
+      color: #ff4444;
+    }
+
+    /* Estilos para toasts */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 0;
+      border: 2px solid #ffb000;
+      background: #222;
+      color: #ffb000;
+      font-family: inherit;
+      font-size: 0.9rem;
+      z-index: 10000;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .toast-success {
+      border-color: #0f0;
+      color: #0f0;
+    }
+
+    .toast-error {
+      border-color: #f44;
+      color: #f44;
+    }
+
+    .toast-info {
+      border-color: #ffb000;
+      color: #ffb000;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0;
+      margin-left: auto;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .toast-close:hover {
+      opacity: 1;
+    }
+
+    /* Estilos para filtros de género en biblioteca */
+    .genre-filters {
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background: #222;
+      border-radius: 0;
+      border: 1px solid #ffb000;
+    }
+
+    .genre-filters .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .genre-filters .filter-chip {
+      display: inline-block;
+      background: #333;
+      padding: 0.3rem 0.8rem;
+      border-radius: 0;
+      font-size: 0.85rem;
+      color: #ffb000;
+      border: 1px solid #ffb000;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 0;
+    }
+
+    .genre-filters .filter-chip:hover {
+      background: #ffb000;
+      color: #000;
+      transform: translateY(-1px);
+    }
+
+    .genre-filters .filter-chip.active {
+      background: #ffb000;
+      color: #000;
+      border-color: #ffb000;
+    }
+
+    .genre-filters .clear-filters {
+      margin-left: auto;
+      background: #ff4444;
+      color: #fff;
+      border: 1px solid #ff4444;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .genre-filters .clear-filters:hover {
+      background: #fff;
+      color: #ff4444;
+    }
+
     .actions {
       margin-bottom: 0.5rem;
     }
@@ -768,6 +941,9 @@
       <div id="librarySearch">
         <input type="text" id="librarySearchInput" placeholder="Buscar en biblioteca..." />
       </div>
+      <div id="libraryGenreFilters" class="genre-filters">
+        <!-- Los chips de género se agregarán aquí dinámicamente -->
+      </div>
       <div id="emptyLib">Tu biblioteca está vacía. Busca y agrega películas o series.</div>
       <div id="library"></div>
     </section>
@@ -790,7 +966,8 @@
   // Estado de la app
   const state = {
     library: store.get(),
-    searchResults: []
+    searchResults: [],
+    genreFilter: null // Filtro de género activo
   };
 
   // Estado de instalación PWA
@@ -881,16 +1058,164 @@
   };
 
   // Funciones auxiliares
-  function posterUrl(poster) {
-    if (!poster || poster === 'N/A') {
-      return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMTExIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNmZmIwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5OTyBJTUFHRPC90ZXh0Pgo8L3N2Zz4K';
+  function filterByGenre(genre) {
+    if (state.genreFilter === genre) {
+      // Si ya está activo, desactivar filtro
+      state.genreFilter = null;
+    } else {
+      // Activar nuevo filtro
+      state.genreFilter = genre;
     }
-    return poster;
+    renderResults({ Search: state.searchResults });
+    updateGenreFilterIndicator();
   }
 
-  function genreChips(genres) {
+  function updateGenreFilterIndicator() {
+    // Remover indicador anterior
+    const existingIndicator = document.querySelector('.genre-filter-indicator');
+    if (existingIndicator) {
+      existingIndicator.remove();
+    }
+
+    // Agregar nuevo indicador si hay filtro activo
+    if (state.genreFilter) {
+      const indicator = document.createElement('div');
+      indicator.className = 'genre-filter-indicator';
+      indicator.innerHTML = `
+        <span>Filtrando por: <strong>${state.genreFilter}</strong></span>
+        <button class="btn clear-filter" onclick="clearGenreFilter()">✕</button>
+      `;
+      document.querySelector('header').appendChild(indicator);
+    }
+  }
+
+  function clearGenreFilter() {
+    state.genreFilter = null;
+    renderResults({ Search: state.searchResults });
+    updateGenreFilterIndicator();
+  }
+
+  // Hacer clearGenreFilter global
+  window.clearGenreFilter = clearGenreFilter;
+
+  function genreChips(genres, clickable = false) {
     if (!genres) return '';
-    return genres.split(', ').map(g => `<span class="chip">${g}</span>`).join('');
+    return genres.split(', ').map(g => {
+      const clickAttr = clickable ? ` data-genre="${g}"` : '';
+      const isActive = state.genreFilter === g ? ' active' : '';
+      const classes = `chip${clickable ? ' clickable' : ''}${isActive}`;
+      return `<span class="${classes}"${clickAttr}>${g}</span>`;
+    }).join('');
+  }
+
+  // Función para mostrar mensajes toast no bloqueantes
+  function showToast(message, type = 'info') {
+    // Remover toast anterior si existe
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) {
+      existingToast.remove();
+    }
+
+    // Crear nuevo toast
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+      <span>${message}</span>
+      <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+    `;
+
+    // Agregar al DOM
+    document.body.appendChild(toast);
+
+    // Mostrar con animación
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    // Auto-remover después de 3 segundos
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  // Estado para filtros de biblioteca
+  state.libraryGenreFilter = null;
+
+  // Función para renderizar chips de filtro de género en biblioteca
+  function renderGenreFilters() {
+    const genreFiltersContainer = $('#libraryGenreFilters');
+    const library = store.get();
+
+    // Extraer géneros únicos de la biblioteca
+    const allGenres = new Set();
+    library.forEach(item => {
+      if (item.genre) {
+        item.genre.split(', ').forEach(genre => {
+          if (genre.trim()) allGenres.add(genre.trim());
+        });
+      }
+    });
+
+    const uniqueGenres = Array.from(allGenres).sort();
+
+    if (uniqueGenres.length === 0) {
+      genreFiltersContainer.innerHTML = '';
+      return;
+    }
+
+    const genreChipsHtml = uniqueGenres.map(genre => {
+      const isActive = state.libraryGenreFilter === genre ? 'active' : '';
+      return `<span class="filter-chip ${isActive}" data-genre="${genre}">${genre}</span>`;
+    }).join('');
+
+    const clearButtonHtml = state.libraryGenreFilter ?
+      `<button class="clear-filters" onclick="clearLibraryGenreFilter()">Limpiar filtro</button>` : '';
+
+    genreFiltersContainer.innerHTML = `
+      <div class="filter-chips">
+        <span style="color: #ffb000; font-size: 0.9rem; margin-right: 0.5rem;">Filtrar por género:</span>
+        ${genreChipsHtml}
+        ${clearButtonHtml}
+      </div>
+    `;
+  }
+
+  // Función para filtrar por género en biblioteca
+  function filterLibraryByGenre(genre) {
+    if (state.libraryGenreFilter === genre) {
+      // Si ya está activo, desactivar filtro
+      state.libraryGenreFilter = null;
+    } else {
+      // Activar nuevo filtro
+      state.libraryGenreFilter = genre;
+    }
+    renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
+  }
+
+  // Función para limpiar filtro de género en biblioteca
+  function clearLibraryGenreFilter() {
+    state.libraryGenreFilter = null;
+    renderLibrary($('#librarySearchInput').value);
+  }
+
+  // Hacer las funciones globales
+  window.filterLibraryByGenre = filterLibraryByGenre;
+  window.clearLibraryGenreFilter = clearLibraryGenreFilter;
+
+  function posterUrl(poster) {
+    if (poster && poster !== 'N/A' && poster !== '') {
+      return poster;
+    }
+    // Imagen de respaldo SVG
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450">
+        <rect width="300" height="450" fill="#1a1a1a"/>
+        <rect x="50" y="150" width="200" height="150" fill="#333" rx="10"/>
+        <circle cx="120" cy="200" r="20" fill="#666"/>
+        <polygon points="180,190 220,225 180,260" fill="#666"/>
+        <text x="150" y="320" text-anchor="middle" fill="#888" font-family="Arial" font-size="16">Sin imagen</text>
+        <text x="150" y="340" text-anchor="middle" fill="#888" font-family="Arial" font-size="16">disponible</text>
+      </svg>
+    `)}`;
   }
 
   function normalizeItem(full){
@@ -915,15 +1240,31 @@
     return base;
   }
 
-  function renderLibrary(filter = '') {
+  function renderLibrary(filter = '', genreFilter = null) {
     state.library = store.get();
     let items = state.library;
+
+    // Aplicar filtro de texto
     if (filter) {
       items = items.filter(item => item.title && item.title.toLowerCase().includes(filter.toLowerCase()));
     }
+
+    // Aplicar filtro de género
+    if (genreFilter) {
+      items = items.filter(item => {
+        if (!item.genre) return false;
+        const itemGenres = item.genre.split(', ');
+        return itemGenres.includes(genreFilter);
+      });
+    }
+
     const cont = $('#library');
     cont.innerHTML = '';
     $('#emptyLib').style.display = items.length ? 'none' : 'block';
+
+    // Renderizar chips de filtro de género
+    renderGenreFilters();
+
     items.forEach(item => {
       const isSeries = item.type === 'series';
       const seenPct = isSeries ? (item.totals?.total? Math.round((item.totals.seen/item.totals.total)*100):0) : (item.seen?100:0);
@@ -962,15 +1303,36 @@
     const cont = $('#resultsContainer');
     cont.innerHTML = '';
     const resultsEl = $('#results');
+
     if (results && results.Search && results.Search.length > 0) {
-      for (const item of results.Search) {
+      // Aplicar filtro de género si está activo
+      let filteredResults = results.Search;
+      if (state.genreFilter) {
+        filteredResults = results.Search.filter(item => {
+          // Necesitamos obtener los detalles para ver los géneros
+          return true; // Por ahora, filtraremos después de obtener los detalles
+        });
+      }
+
+      for (const item of filteredResults) {
         let rating = 'Cargando...';
+        let details = null;
         try {
-          const details = await omdb.getById(item.imdbID);
+          details = await omdb.getById(item.imdbID);
           rating = details.imdbRating || 'N/A';
+
+          // Aplicar filtro de género después de obtener detalles
+          if (state.genreFilter && details.Genre) {
+            const genres = details.Genre.split(', ');
+            if (!genres.includes(state.genreFilter)) {
+              continue; // Saltar este item si no tiene el género filtrado
+            }
+          }
         } catch (error) {
           rating = 'Error';
+          if (state.genreFilter) continue; // Saltar items con error si hay filtro activo
         }
+
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
@@ -979,6 +1341,7 @@
             <div class="title">${item.Title}</div>
             <div class="meta">${item.Year} · ${item.Type}</div>
             <div class="meta">⭐ ${rating}</div>
+            <div class="chips">${genreChips(details?.Genre, true)}</div>
             <button class="btn" data-action="add" data-id="${item.imdbID}">Agregar a Biblioteca</button>
           </div>`;
         cont.appendChild(card);
@@ -1024,8 +1387,14 @@
       console.log('Click en resultsContainer:', e.target);
       const action = e.target.dataset.action;
       const id = e.target.dataset.id;
-      console.log('Action:', action, 'ID:', id);
-      if (action && id) {
+      const genre = e.target.dataset.genre;
+      console.log('Action:', action, 'ID:', id, 'Genre:', genre);
+
+      if (genre) {
+        // Click en chip de género
+        filterByGenre(genre);
+      } else if (action && id) {
+        // Click en botón de acción
         console.log('Llamando handleAction con:', action, id);
         handleAction(action, id);
       }
@@ -1040,7 +1409,7 @@
     });
 
     $('#librarySearchInput').addEventListener('input', (e) => {
-      renderLibrary(e.target.value);
+      renderLibrary(e.target.value, state.libraryGenreFilter);
     });
 
     // Exportar biblioteca
@@ -1072,13 +1441,18 @@
               if (Array.isArray(importedLibrary)) {
                 state.library = importedLibrary;
                 store.set(state.library);
-                renderLibrary();
-                alert('Biblioteca importada exitosamente!');
+
+                // Refrescar automáticamente la biblioteca
+                setTimeout(() => {
+                  renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
+                  // Mostrar mensaje de éxito no bloqueante
+                  showToast('Biblioteca importada exitosamente!', 'success');
+                }, 100);
               } else {
-                alert('Archivo inválido. Debe ser un array de películas.');
+                showToast('Archivo inválido. Debe ser un array de películas.', 'error');
               }
             } catch (error) {
-              alert('Error al importar: ' + error.message);
+              showToast('Error al importar: ' + error.message, 'error');
             }
           };
           reader.readAsText(file);
@@ -1086,6 +1460,45 @@
       });
       input.click();
     });
+
+    // Event listener para chips de filtro de género en biblioteca
+    $('#libraryGenreFilters').addEventListener('click', (e) => {
+      if (e.target.classList.contains('filter-chip')) {
+        const genre = e.target.dataset.genre;
+        if (genre) {
+          filterLibraryByGenre(genre);
+        }
+      }
+    });
+
+    // Service Worker registration
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => {
+          console.log('Service Worker registered');
+          reg.update(); // Force update
+        })
+        .catch(err => console.error('Service Worker registration failed:', err));
+    }
+
+    // Debugging global para clics
+    document.addEventListener('click', (e) => {
+      if (e.target.dataset.action) {
+        console.log('Clic detectado:', e.target.dataset.action, e.target.dataset.id);
+      }
+    });
+
+    // Manejar errores de carga de imágenes
+    document.addEventListener('error', (e) => {
+      if (e.target.tagName === 'IMG' && e.target.classList.contains('poster')) {
+        console.log('Error cargando imagen:', e.target.src);
+        // Evitar bucle infinito: solo cambiar si no es ya una imagen de respaldo
+        if (!e.target.src.includes('data:image/svg+xml')) {
+          e.target.src = posterUrl(null); // Usar la función posterUrl para imagen de respaldo
+          e.target.alt = 'Imagen no disponible';
+        }
+      }
+    }, true);
   });
 
   async function addToLibrary(id) {
@@ -1095,7 +1508,7 @@
       const item = normalizeItem(full);
       state.library.push(item);
       store.set(state.library);
-      renderLibrary();
+      renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
     } catch (error) {
       console.error('Error adding to library:', error);
     }
@@ -1113,7 +1526,7 @@
         if (!itemToRemove) return;
         state.library = state.library.filter(i => i.imdbID !== id);
         store.set(state.library);
-        renderLibrary();
+        renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
         break;
       case 'toggleMovie':
         const item = state.library.find(i => i.imdbID === id);
@@ -1123,7 +1536,7 @@
         } else {
           item.seen = false;
           store.set(state.library);
-          renderLibrary();
+          renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
         }
         break;
       default:
@@ -1153,7 +1566,7 @@
       item.userRating = ratingInput.value ? parseFloat(ratingInput.value) : null;
       item.userComment = commentInput.value.trim();
       store.set(state.library);
-      renderLibrary();
+      renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
       modal.style.display = 'none';
     };
 
@@ -1162,17 +1575,6 @@
     };
   }
 
-  </script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => {
-          console.log('Service Worker registered');
-          reg.update(); // Force update
-        })
-        .catch(err => console.error('Service Worker registration failed:', err));
-    }
   </script>
 
   <!-- Modal para marcar como vista -->
@@ -1196,25 +1598,7 @@
       </form>
     </div>
   </div>
-</body>
-<script>
-  // Manejar errores de carga de imágenes
-  document.addEventListener('DOMContentLoaded', () => {
-    // Manejar errores de carga de imágenes
-    document.addEventListener('error', (e) => {
-      if (e.target.tagName === 'IMG' && e.target.classList.contains('poster')) {
-        console.log('Error cargando imagen:', e.target.src);
-        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMTExIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNmZmIwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JTUFHRU4gTk8gRElTUE9OSJBLEPC90ZXh0Pgo8L3N2Zz4K';
-        e.target.alt = 'Imagen no disponible';
-      }
-    }, true);
 
-    // Debugging global para clics
-    document.addEventListener('click', (e) => {
-      if (e.target.dataset.action) {
-        console.log('Clic detectado:', e.target.dataset.action, e.target.dataset.id);
-      }
-    });
-  });
-</script>
+</body>
+</html>
 </html>
