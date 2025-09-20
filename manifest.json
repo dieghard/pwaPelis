@@ -4,13 +4,13 @@
   "description": "Aplicación PWA para gestionar biblioteca de películas y series usando OMDB",
   "start_url": "/pwa_omdb_biblioteca_de_pelis_y_series_html_css_js_en_1_archivo.html",
   "display": "standalone",
-  "background_color": "#f4f4f4",
-  "theme_color": "#0f172a",
+  "background_color": "#000",
+  "theme_color": "#ffb000",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192x192?text=Icon",
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjZmZiMDAwIi8+Cjx0ZXh0IHg9Ijk2IiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJDb3VyaWVyIE5ldyIgc2l6ZT0iMjQiIGZpbGw9IiMwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7ilrDilrDilrDilrDilrA8L3RleHQ+Cjwvc3ZnPg==",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/svg+xml"
     }
   ]
 }
