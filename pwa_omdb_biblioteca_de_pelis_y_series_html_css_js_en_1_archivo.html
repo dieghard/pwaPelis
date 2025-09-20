@@ -340,6 +340,61 @@
       100% { transform: translateY(4px); }
     }
 
+    /* Mensaje de biblioteca vacía estilo retro */
+    #emptyLib {
+      text-align: center;
+      padding: 3rem 2rem;
+      margin: 2rem 0;
+      background: linear-gradient(135deg, #111, #000);
+      border: 2px solid #ffb000;
+      border-radius: 0;
+      box-shadow:
+        0 0 20px rgba(255, 176, 0, 0.3),
+        inset 0 0 20px rgba(255, 176, 0, 0.1);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.2rem;
+      color: #ffb000;
+      text-shadow: 0 0 10px #ffb000;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #emptyLib::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 176, 0, 0.02) 0px,
+        rgba(255, 176, 0, 0.02) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      pointer-events: none;
+      animation: retroScanlines 0.15s linear infinite;
+    }
+
+    @keyframes retroScanlines {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    /* Estilos para imágenes con errores */
+    .poster {
+      transition: opacity 0.3s;
+    }
+
+    .poster[src=""],
+    .poster[src*="404"],
+    .poster[alt*="Error"] {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+
     .hidden {
       display: none !important;
     }
@@ -827,7 +882,10 @@
 
   // Funciones auxiliares
   function posterUrl(poster) {
-    return poster !== 'N/A' ? poster : 'https://via.placeholder.com/200x300?text=No+Image';
+    if (!poster || poster === 'N/A') {
+      return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMTExIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNmZmIwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5OTyBJTUFHRPC90ZXh0Pgo8L3N2Zz4K';
+    }
+    return poster;
   }
 
   function genreChips(genres) {
@@ -861,7 +919,7 @@
     state.library = store.get();
     let items = state.library;
     if (filter) {
-      items = items.filter(item => item.title.toLowerCase().includes(filter.toLowerCase()));
+      items = items.filter(item => item.title && item.title.toLowerCase().includes(filter.toLowerCase()));
     }
     const cont = $('#library');
     cont.innerHTML = '';
@@ -959,6 +1017,17 @@
           // Ocultar mensaje de carga
           loadingMessage.classList.add('hidden');
         }
+      }
+    });
+
+    $('#resultsContainer').addEventListener('click', (e) => {
+      console.log('Click en resultsContainer:', e.target);
+      const action = e.target.dataset.action;
+      const id = e.target.dataset.id;
+      console.log('Action:', action, 'ID:', id);
+      if (action && id) {
+        console.log('Llamando handleAction con:', action, id);
+        handleAction(action, id);
       }
     });
 
@@ -1128,4 +1197,24 @@
     </div>
   </div>
 </body>
+<script>
+  // Manejar errores de carga de imágenes
+  document.addEventListener('DOMContentLoaded', () => {
+    // Manejar errores de carga de imágenes
+    document.addEventListener('error', (e) => {
+      if (e.target.tagName === 'IMG' && e.target.classList.contains('poster')) {
+        console.log('Error cargando imagen:', e.target.src);
+        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMTExIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNmZmIwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JTUFHRU4gTk8gRElTUE9OSJBLEPC90ZXh0Pgo8L3N2Zz4K';
+        e.target.alt = 'Imagen no disponible';
+      }
+    }, true);
+
+    // Debugging global para clics
+    document.addEventListener('click', (e) => {
+      if (e.target.dataset.action) {
+        console.log('Clic detectado:', e.target.dataset.action, e.target.dataset.id);
+      }
+    });
+  });
+</script>
 </html>
