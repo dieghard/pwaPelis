@@ -1,0 +1,16 @@
+{
+  "name": "Mi Biblioteca OMDb PWA",
+  "short_name": "Biblioteca PWA",
+  "description": "Aplicación PWA para gestionar biblioteca de películas y series usando OMDB",
+  "start_url": "/pwa_omdb_biblioteca_de_pelis_y_series_html_css_js_en_1_archivo.html",
+  "display": "standalone",
+  "background_color": "#f4f4f4",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192?text=Icon",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
