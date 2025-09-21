@@ -1,6 +1,6 @@
-# 🎬 Mi Biblioteca de Películas y Series - PWA
+# 🎬 Mi Filmoteca de Películas y Series - PWA
 
-Una aplicación web progresiva (PWA) moderna con diseño retro 80entoso para gestionar tu biblioteca personal de películas y series. Utiliza la API de OMDB para buscar y obtener información detallada, con funcionalidades avanzadas de seguimiento y estadísticas.
+Una aplicación web progresiva (PWA) moderna con diseño retro 80entoso para gestionar tu Filmoteca personal de películas y series. Utiliza la API de OMDB para buscar y obtener información detallada, con funcionalidades avanzadas de seguimiento y estadísticas.
 
 ## ✨ Características Principales
 
