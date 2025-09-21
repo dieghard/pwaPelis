@@ -11,7 +11,7 @@ const CONFIG = {
 
   // App Configuration
   APP: {
-    NAME: 'Mi Biblioteca PWA',
+    NAME: 'Mi Filmoteca PWA',
     VERSION: '1.0.1',
     AUTHOR: 'Diego Markiewicz',
     EMAIL: 'dieghard@gmail.com',

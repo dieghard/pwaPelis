@@ -1661,8 +1661,8 @@
     /* Toasts retro cyberpunk mejorados */
     .toast {
       position: fixed;
-      top: var(--space-4);
-      right: var(--space-4);
+      top: 50vh;
+      left: 50vw;
       padding: var(--space-3) var(--space-4);
       border-radius: 0; /* Terminal retro */
       border: var(--border-normal) solid var(--amber-primary);
@@ -1672,19 +1672,45 @@
       font-size: var(--font-sm);
       z-index: var(--z-toast);
       opacity: 0;
-      transform: translateX(400px);
+      transform: translate(-50%, -50%) scale(0.8);
       transition: all var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
+      display: block; /* Cambiado de flex para soportar multi-línea */
       gap: var(--space-2);
-      max-width: 400px;
+      max-width: 350px;
+      min-width: 300px;
       box-shadow: var(--glow-medium), var(--shadow-terminal);
-      backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      position: relative;
+      backdrop-filter: blur(10px);
       overflow: hidden;
       text-transform: uppercase;
       letter-spacing: 1px;
+      white-space: pre-line; /* Soporte para \n */
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    /* Botón de cerrar del toast */
+    .toast-close {
+      position: absolute;
+      top: var(--space-1);
+      right: var(--space-1);
+      background: none;
+      border: 1px solid var(--amber-dim);
+      color: var(--amber-primary);
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all var(--transition-fast);
+    }
+
+    .toast-close:hover {
+      background: var(--amber-primary);
+      color: var(--bg-terminal);
+      border-color: var(--amber-bright);
     }
 
     /* Efectos CRT en toast */
@@ -1721,13 +1747,27 @@
 
     .toast.show {
       opacity: 1;
-      transform: translateX(0);
+      transform: translate(-50%, -50%) scale(1);
     }
 
     .toast-success {
       border-color: var(--green-terminal);
       color: var(--green-terminal);
-      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), var(--shadow-terminal);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.5), var(--shadow-terminal);
+      background: linear-gradient(135deg, var(--bg-monitor), rgba(0, 255, 65, 0.1));
+      text-shadow: 0 0 5px rgba(0, 255, 65, 0.8);
+      animation: successPulse 2s ease-in-out;
+    }
+
+    @keyframes successPulse {
+      0%, 100% { 
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.5), var(--shadow-terminal);
+        border-color: var(--green-terminal);
+      }
+      50% { 
+        box-shadow: 0 0 30px rgba(0, 255, 65, 0.8), var(--shadow-terminal);
+        border-color: #00ff41;
+      }
     }
 
     .toast-error {
@@ -2933,7 +2973,7 @@
   }
 
   // Función para mostrar mensajes toast no bloqueantes
-  function showToast(message, type = 'info') {
+  window.showToast = function(message, type = 'info') {
     // Remover toast anterior si existe
     const existingToast = document.querySelector('.toast');
     if (existingToast) {
@@ -2959,7 +2999,7 @@
       toast.classList.remove('show');
       setTimeout(() => toast.remove(), 300);
     }, 3000);
-  }
+  };
 
   // Estado para filtros de biblioteca
   state.libraryGenreFilter = null;
@@ -3290,8 +3330,12 @@
     let items = state.library;
 
     // Aplicar filtro de texto
-    if (filter) {
-      items = items.filter(item => item.title && item.title.toLowerCase().includes(filter.toLowerCase()));
+    if (filter && typeof filter === 'string') {
+      items = items.filter(item => 
+        item.title && 
+        typeof item.title === 'string' && 
+        item.title.toLowerCase().includes(filter.toLowerCase())
+      );
     }
 
     // Aplicar filtro de género
@@ -3328,7 +3372,8 @@
       
       card.innerHTML = `
         <div class="poster-container">
-          <img class="poster" src="${posterUrl(item.poster)}" alt="${item.title}">
+          <img class="poster" src="${posterUrl(item.poster)}" alt="${item.title}" 
+               onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQ1MCIgdmlld0JveD0iMCAwIDMwMCA0NTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDUwIiBmaWxsPSIjMTExMTExIiBzdHJva2U9IiNmZmIwMDAiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIxNTAiIHk9IjIwMCIgZmlsbD0iI2ZmYjAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiPvCfmoEgRVJST1IgNDA0PC90ZXh0Pgo8dGV4dCB4PSIxNTAiIHk9IjIzMCIgZmlsbD0iI2ZmYjAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxMiI+SW1hZ2VuIG5vIGVuY29udHJhZGE8L3RleHQ+CjwvdGV4Zz4K'; this.onerror=null;">
           <div class="poster-overlay" data-action="toggleMovie" data-id="${item.imdbID}"></div>
         </div>
         <div class="status-indicator"></div>
@@ -3605,15 +3650,63 @@
 
   async function addToLibrary(id) {
     console.log('Adding to library:', id);
+    
+    // Verificar si ya existe en la biblioteca
+    const existingItem = state.library.find(item => item.imdbID === id);
+    if (existingItem) {
+      // Notificación de elemento ya existente
+      const itemType = existingItem.type === 'series' ? 'serie' : 'película';
+      const warningMessage = `◢◤ ADVERTENCIA SISTEMA ◢◤\n🎬 ${existingItem.title}\n▲ ${itemType.toUpperCase()} YA EXISTE EN FILMOTECA ▲\n█ OPERACIÓN CANCELADA █`;
+      
+      // Verificar que showToast existe antes de usarla
+      if (typeof showToast === 'function') {
+        showToast(warningMessage, 'info');
+      } else {
+        console.warn('showToast function not available');
+        alert('Esta película/serie ya está en tu biblioteca');
+      }
+      return;
+    }
+    
     try {
       const full = await omdb.getById(id);
       const item = normalizeItem(full);
+      
+      // Doble verificación después de obtener datos completos
+      const stillExists = state.library.find(existing => existing.imdbID === item.imdbID);
+      if (stillExists) {
+        console.log('Item already exists after API call, skipping');
+        return;
+      }
+      
       state.library.push(item);
       store.set(state.library);
       updateStats();
       renderLibrary($('#librarySearchInput').value, state.libraryGenreFilter);
+      
+      // Notificación retro cyberpunk 80s
+      const itemType = item.type === 'series' ? 'serie' : 'película';
+      const retroMessage = `◢◤ SISTEMA CONFIRMADO ◢◤\n🎬 ${item.title || 'Título desconocido'}\n▲ ${itemType.toUpperCase()} AGREGADA A FILMOTECA ▲\n█ ESTADO: OPERATIVO █`;
+      
+      // Verificar que showToast existe antes de usarla
+      if (typeof showToast === 'function') {
+        showToast(retroMessage, 'success');
+      } else {
+        console.warn('showToast function not available');
+        alert('¡Agregado a la biblioteca!');
+      }
+      
     } catch (error) {
       console.error('Error adding to library:', error);
+      // Notificación de error también con estilo retro
+      const errorMessage = '◢◤ ERROR DE SISTEMA ◢◤\n⚠️ FALLO AL AGREGAR ELEMENTO\n█ VERIFICAR CONEXIÓN █';
+      
+      if (typeof showToast === 'function') {
+        showToast(errorMessage, 'error');
+      } else {
+        console.warn('showToast function not available');
+        alert('Error al agregar a la biblioteca');
+      }
     }
   }
 

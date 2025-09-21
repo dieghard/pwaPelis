@@ -154,11 +154,13 @@ npx serve .
 
 ```
 pwaPelis/
-├── index.html              # Aplicación principal (SPA)
+├── assets/                # Iconos (PWA)
+├── index.html             # Aplicación principal (SPA)
 ├── manifest.json          # Configuración PWA
 ├── sw.js                  # Service Worker
 ├── screenshots/           # Capturas para documentación
 ├── README.md              # Documentación
+├── config.js              # Archivo de configuración sobre todo para Api 
 ├── LICENSE                # Licencia MIT
 └── .gitignore             # Configuración Git
 ```
