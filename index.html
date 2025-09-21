@@ -5,9 +5,92 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#ffb000" />
   <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSIjZmZiMDAwIi8+Cjx0ZXh0IHg9IjE2IiB5PSIxOCIgZm9udC1mYW1pbHk9IkNvdXJpZXIgTmV3IiBzaXplPSI4IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+RjwvdGV4dD4KPHN2Zz4K" type="image/svg+xml">
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="manifest" href="./manifest.json" />
+  <script src="./config.js"></script>
   <title>Mi Filmoteca – PWA</title>
   <style>
+    /* Variables CSS Retro Cyberpunk */
+    :root {
+      /* Colores Terminal Retro */
+      --amber-primary: #ffb000;
+      --amber-bright: #ffc233;
+      --amber-dark: #cc8c00;
+      --amber-glow: rgba(255, 176, 0, 0.8);
+      --amber-dim: rgba(255, 176, 0, 0.3);
+      
+      /* Colores Cyberpunk Secundarios */
+      --cyan-neon: #00ffff;
+      --magenta-neon: #ff00ff;
+      --green-terminal: #00ff41;
+      --red-error: #ff073a;
+      --blue-info: #0066ff;
+      
+      /* Backgrounds Terminal */
+      --bg-terminal: #000;
+      --bg-monitor: #111;
+      --bg-screen: #222;
+      --bg-overlay: rgba(0, 0, 0, 0.95);
+      
+      /* Text Colors */
+      --text-primary: var(--amber-primary);
+      --text-bright: var(--amber-bright);
+      --text-dim: var(--amber-dim);
+      --text-secondary: #ccc;
+      --text-muted: #888;
+      
+      /* Spacing Sistema Terminal (basado en caracteres) */
+      --char-unit: 0.5rem; /* Unidad base de carácter */
+      --space-1: calc(var(--char-unit) * 1); /* 0.5rem */
+      --space-2: calc(var(--char-unit) * 2); /* 1rem */
+      --space-3: calc(var(--char-unit) * 3); /* 1.5rem */
+      --space-4: calc(var(--char-unit) * 4); /* 2rem */
+      --space-6: calc(var(--char-unit) * 6); /* 3rem */
+      --space-8: calc(var(--char-unit) * 8); /* 4rem */
+      
+      /* Borders Terminal */
+      --border-thin: 1px;
+      --border-normal: 2px;
+      --border-thick: 3px;
+      --border-color: var(--amber-primary);
+      --border-glow: var(--amber-glow);
+      
+      /* Shadows & Glows Retro */
+      --glow-soft: 0 0 10px var(--amber-glow);
+      --glow-medium: 0 0 20px var(--amber-glow);
+      --glow-strong: 0 0 30px var(--amber-glow);
+      --glow-neon: 0 0 20px currentColor;
+      --shadow-terminal: 0 4px 8px rgba(0, 0, 0, 0.8);
+      
+      /* Animations Terminal */
+      --transition-fast: 0.1s ease; /* Respuesta rápida tipo terminal */
+      --transition-normal: 0.3s ease;
+      --transition-slow: 0.6s ease;
+      --flicker-speed: 0.15s;
+      
+      /* Typography Scale */
+      --font-xs: 0.75rem;
+      --font-sm: 0.875rem;
+      --font-base: 1rem;
+      --font-lg: 1.125rem;
+      --font-xl: 1.25rem;
+      --font-2xl: 1.5rem;
+      --font-3xl: 2rem;
+      --font-4xl: 2.5rem;
+      
+      /* Z-Index Scale */
+      --z-base: 1;
+      --z-overlay: 1000;
+      --z-modal: 2000;
+      --z-toast: 3000;
+      --z-tooltip: 4000;
+      
+      /* Responsive Breakpoints */
+      --mobile: 480px;
+      --tablet: 768px;
+      --desktop: 1024px;
+      --wide: 1200px;
+    }
+
     /* Importar fuente retro estilo Commodore 64 */
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Share+Tech+Mono&display=swap');
 
@@ -183,34 +266,86 @@
     }
 
     button {
-      padding: 0.5rem 1rem;
-      background-color: #ffb000;
-      color: #000;
-      border: 1px solid #ffb000;
+      padding: var(--space-2) var(--space-3);
+      background: linear-gradient(135deg, var(--amber-primary), var(--amber-dark));
+      color: var(--bg-terminal);
+      border: var(--border-normal) solid var(--amber-bright);
       cursor: pointer;
       font-family: inherit;
       font-weight: bold;
-      transition: all 0.3s;
-      border-radius: 0;
+      transition: all var(--transition-fast);
+      border-radius: 0; /* Terminal retro */
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: var(--font-sm);
+      box-shadow: var(--glow-soft), var(--shadow-terminal);
+    }
+
+    /* Efecto scanlines en hover */
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(255, 176, 0, 0.15) 1px,
+        rgba(255, 176, 0, 0.15) 2px
+      );
+      opacity: 0;
+      transition: opacity var(--transition-normal);
+      pointer-events: none;
+    }
+
+    /* Efecto de ripple cuadrado */
+    button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.4);
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s, opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    button:hover::before {
+      opacity: 1;
+    }
+
+    button:active::after {
+      width: 200px;
+      height: 200px;
+      opacity: 1;
+      transition: width 0.1s, height 0.1s, opacity 0.1s;
     }
 
     button:hover {
-      background-color: #000;
-      color: #ffb000;
-      box-shadow: 0 0 10px #ffb000;
+      background: linear-gradient(135deg, var(--amber-bright), var(--amber-primary));
+      color: var(--bg-terminal);
+      box-shadow: var(--glow-medium), var(--shadow-terminal);
+      transform: translateY(-2px);
+      text-shadow: var(--glow-neon);
     }
 
-    /* Mensaje de carga 80's */
+    /* Mensaje de carga 80's mejorado */
     .loading-message {
       text-align: center;
-      padding: 3rem 2rem;
-      margin: 2rem 0;
-      background: linear-gradient(135deg, #000, #111, #000);
-      border: 3px solid #ffb000;
+      padding: var(--space-6) var(--space-4);
+      margin: var(--space-4) 0;
+      background: linear-gradient(135deg, var(--bg-terminal), var(--bg-monitor), var(--bg-terminal));
+      border: var(--border-thick) solid var(--amber-primary);
       border-radius: 0;
-      box-shadow:
-        0 0 30px rgba(255, 176, 0, 0.8),
-        inset 0 0 30px rgba(255, 176, 0, 0.2);
+      box-shadow: var(--glow-strong), inset 0 0 30px var(--amber-dim);
       position: relative;
       overflow: hidden;
     }
@@ -224,32 +359,168 @@
       bottom: 0;
       background: repeating-linear-gradient(
         0deg,
-        rgba(255, 176, 0, 0.05) 0px,
-        rgba(255, 176, 0, 0.05) 2px,
+        var(--amber-dim) 0px,
+        var(--amber-dim) 2px,
         transparent 2px,
         transparent 4px
       );
       pointer-events: none;
-      animation: scanlines 0.1s linear infinite;
+      animation: scanlines var(--flicker-speed) linear infinite;
+    }
+
+    /* Skeleton Loading para Cards */
+    .skeleton-card {
+      background: linear-gradient(135deg, var(--bg-monitor), var(--bg-screen));
+      border: var(--border-normal) solid var(--amber-dim);
+      border-radius: 0;
+      padding: 0;
+      margin: var(--space-2) 0;
+      display: flex;
+      flex-direction: column;
+      width: 200px;
+      height: 450px;
+      animation: skeletonPulse 1.5s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skeleton-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(255, 176, 0, 0.05) 1px,
+        rgba(255, 176, 0, 0.05) 3px
+      );
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .skeleton-poster {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(
+        90deg,
+        var(--bg-screen) 25%,
+        var(--bg-monitor) 50%,
+        var(--bg-screen) 75%
+      );
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.5s infinite;
+      border-bottom: var(--border-normal) solid var(--amber-dim);
+    }
+
+    .skeleton-info {
+      padding: var(--space-3);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      background: linear-gradient(135deg, var(--bg-terminal), var(--bg-monitor));
+    }
+
+    .skeleton-line {
+      height: 16px;
+      background: linear-gradient(
+        90deg,
+        var(--bg-screen) 25%,
+        var(--bg-monitor) 50%,
+        var(--bg-screen) 75%
+      );
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.5s infinite;
+      border-radius: 0;
+      border: 1px solid var(--amber-dim);
+      opacity: 0.7;
+    }
+
+    .skeleton-line.title {
+      height: 20px;
+      width: 85%;
+      border-color: var(--amber-primary);
+      opacity: 1;
+    }
+
+    .skeleton-line.short { width: 60%; }
+    .skeleton-line.medium { width: 80%; }
+    .skeleton-line.long { width: 100%; }
+
+    .skeleton-chips {
+      display: flex;
+      gap: var(--space-1);
+      margin: var(--space-2) 0;
+    }
+
+    .skeleton-chip {
+      width: 50px;
+      height: 24px;
+      background: linear-gradient(
+        90deg,
+        var(--bg-screen) 25%,
+        var(--bg-monitor) 50%,
+        var(--bg-screen) 75%
+      );
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.5s infinite;
+      border: 1px solid var(--amber-dim);
+      border-radius: 0;
+    }
+
+    .skeleton-button {
+      height: 32px;
+      width: 120px;
+      background: linear-gradient(
+        90deg,
+        var(--bg-screen) 25%,
+        var(--amber-dim) 50%,
+        var(--bg-screen) 75%
+      );
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.5s infinite;
+      border: var(--border-normal) solid var(--amber-primary);
+      border-radius: 0;
+      margin-top: var(--space-2);
+    }
+
+    @keyframes skeletonShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes skeletonPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Loading Grid para Skeleton Cards */
+    .skeleton-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      justify-content: flex-start;
     }
 
     .loading-content {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.5rem;
+      gap: var(--space-3);
       position: relative;
       z-index: 1;
     }
 
     .loading-ascii {
-      color: #ffb000;
+      color: var(--text-primary);
       font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
+      font-size: var(--font-sm);
       line-height: 1.2;
-      text-shadow:
-        0 0 5px #ffb000,
-        0 0 10px #ffb000;
+      text-shadow: var(--glow-medium);
       animation: flicker 2s infinite;
       white-space: pre;
     }
@@ -259,26 +530,25 @@
       animation: blink 1s infinite;
     }
 
+    /* Spinner hexagonal retro cyberpunk */
     .loading-spinner {
       width: 50px;
       height: 50px;
-      border: 4px solid #333;
-      border-top: 4px solid #ffb000;
-      border-right: 4px solid #ff8c00;
+      border: 4px solid var(--bg-screen);
+      border-top: 4px solid var(--amber-primary);
+      border-right: 4px solid var(--amber-dark);
       border-radius: 0;
       animation: spin 0.8s linear infinite, pulse 2s infinite;
       clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      box-shadow: var(--glow-soft);
     }
 
     .loading-text {
-      color: #ffb000;
+      color: var(--text-primary);
       font-family: 'Share Tech Mono', monospace;
-      font-size: 1.1rem;
+      font-size: var(--font-lg);
       font-weight: bold;
-      text-shadow:
-        0 0 5px #ffb000,
-        0 0 10px #ffb000,
-        0 0 15px #ffb000;
+      text-shadow: var(--glow-strong);
       margin: 0;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -287,14 +557,15 @@
 
     .loading-dots {
       display: flex;
-      gap: 0.5rem;
+      gap: var(--space-2);
     }
 
     .loading-dots span {
-      color: #ffb000;
-      font-size: 1.5rem;
+      color: var(--text-primary);
+      font-size: var(--font-xl);
       font-weight: bold;
       animation: dotBlink 1.4s infinite;
+      text-shadow: var(--glow-neon);
     }
 
     .loading-dots span:nth-child(2) {
@@ -431,75 +702,509 @@
     }
 
     .card {
-      background: #222;
-      border: 1px solid #ffb000;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(255, 176, 0, 0.3);
+      background: linear-gradient(135deg, var(--bg-monitor), var(--bg-screen));
+      border: var(--border-normal) solid transparent;
+      border-radius: 0;
+      box-shadow: var(--glow-soft), var(--shadow-terminal);
       overflow: hidden;
-      width: 200px;
-      transition: all 0.3s;
+      width: 280px;
+      height: 120px; /* Altura fija compacta */
+      transition: all var(--transition-normal);
+      position: relative;
+      background-clip: padding-box;
+      display: flex; /* Layout horizontal */
+      cursor: pointer;
+    }
+
+    /* Card expandida */
+    .card.expanded {
+      height: auto;
+      min-height: 200px;
+      width: 320px;
+      flex-direction: column;
+    }
+
+    /* Grid de biblioteca más compacto */
+    #library {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-2);
+      padding: var(--space-2);
+      background: linear-gradient(135deg, var(--bg-terminal), var(--bg-monitor));
+      border: var(--border-thin) solid var(--amber-dim);
       position: relative;
     }
 
+    /* Efecto scanlines en toda la biblioteca */
+    #library::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(255, 176, 0, 0.02) 3px,
+        rgba(255, 176, 0, 0.02) 6px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Cards en el grid */
+    #library .card {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Borde con gradiente cyberpunk */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      padding: var(--border-normal);
+      background: linear-gradient(
+        145deg,
+        var(--amber-primary),
+        var(--cyan-neon),
+        var(--amber-bright),
+        var(--magenta-neon)
+      );
+      border-radius: inherit;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: xor;
+      z-index: -1;
+      opacity: 0.8;
+      transition: opacity var(--transition-normal);
+    }
+
+    /* Efecto scanlines CRT */
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(255, 176, 0, 0.05) 1px,
+        rgba(255, 176, 0, 0.05) 3px
+      );
+      pointer-events: none;
+      opacity: 0.6;
+      z-index: 1;
+    }
+
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px rgba(255, 176, 0, 0.5);
-      border-color: #ffcc00;
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--glow-strong), var(--shadow-terminal);
+      background: linear-gradient(135deg, var(--bg-screen), var(--bg-monitor));
+    }
+
+    .card:hover::before {
+      opacity: 1;
+      background: linear-gradient(
+        145deg,
+        var(--amber-bright),
+        var(--cyan-neon),
+        var(--amber-primary),
+        var(--magenta-neon),
+        var(--amber-bright)
+      );
+      animation: borderPulse 2s ease-in-out infinite;
+    }
+
+    /* Efecto de scan en hover */
+    .card:hover .info::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 176, 0, 0.15),
+        transparent
+      );
+      animation: retroScan 0.8s ease-in-out;
+      z-index: 2;
+    }
+
+    @keyframes borderPulse {
+      0%, 100% { 
+        filter: brightness(1); 
+      }
+      50% { 
+        filter: brightness(1.3); 
+      }
+    }
+
+    @keyframes retroScan {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* Contenedor de poster */
+    .poster-container {
+      position: relative;
+      flex-shrink: 0;
     }
 
     .poster {
-      width: 100%;
-      height: 300px;
+      width: 80px; /* Póster más pequeño */
+      height: 120px;
       object-fit: cover;
-      border-bottom: 1px solid #ffb000;
+      border-right: var(--border-normal) solid var(--amber-primary);
+      position: relative;
+      transition: all var(--transition-normal);
+      flex-shrink: 0;
+      display: block;
+    }
+
+    /* Póster en card expandida */
+    .card.expanded .poster-container {
+      width: 100%;
+    }
+
+    .card.expanded .poster {
+      width: 100%;
+      height: 200px;
+      border-right: none;
+      border-bottom: var(--border-normal) solid var(--amber-primary);
+    }
+
+    /* Overlay de estado sobre la imagen */
+    .poster-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-overlay);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all var(--transition-fast);
+      z-index: 10;
+    }
+
+    /* Overlay visible en hover */
+    .card:hover .poster-overlay {
+      opacity: 1;
+    }
+
+    /* Estado VISTO - overlay verde */
+    .card.seen .poster-overlay {
+      background: linear-gradient(135deg, rgba(0, 255, 65, 0.9), rgba(0, 200, 50, 0.8));
+      opacity: 0.8;
+    }
+
+    .card.seen .poster-overlay::before {
+      content: '✓ VISTO';
+      color: var(--bg-terminal);
+      font-family: 'Share Tech Mono', monospace;
+      font-weight: bold;
+      font-size: var(--font-sm);
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      letter-spacing: 2px;
+      animation: pulse 2s infinite;
+    }
+
+    /* Estado NO VISTO - overlay amber */
+    .card:not(.seen) .poster-overlay::before {
+      content: 'MARCAR\A COMO VISTA';
+      white-space: pre;
+      color: var(--amber-bright);
+      font-family: 'Share Tech Mono', monospace;
+      font-weight: bold;
+      font-size: var(--font-xs);
+      text-align: center;
+      text-shadow: var(--glow-neon);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: 1px solid var(--amber-primary);
+      padding: var(--space-1) var(--space-2);
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Efecto CRT en póster */
+    .poster::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 176, 0, 0.03) 2px,
+        rgba(255, 176, 0, 0.03) 4px
+      );
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .card:hover .poster {
+      filter: brightness(1.1) contrast(1.05);
+    }
+
+    .card:hover .poster::after {
+      animation: posterScanlines 0.1s linear infinite;
+    }
+
+    @keyframes posterScanlines {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
     }
 
     .info {
-      padding: 1rem;
+      padding: var(--space-2);
+      position: relative;
+      background: linear-gradient(135deg, var(--bg-terminal), var(--bg-monitor));
+      border-left: 1px solid var(--amber-dim);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    /* Info en card expandida */
+    .card.expanded .info {
+      border-left: none;
+      border-top: 1px solid var(--amber-dim);
+      padding: var(--space-3);
+    }
+
+    /* Contenido básico siempre visible */
+    .info-basic {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    /* Contenido extendido solo en expandida */
+    .info-extended {
+      display: none;
+      margin-top: var(--space-2);
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .card.expanded .info-extended {
+      display: block;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .title {
       font-weight: bold;
-      margin-bottom: 0.5rem;
-      color: #ffb000;
+      margin-bottom: var(--space-1);
+      color: var(--text-primary);
+      text-shadow: var(--glow-neon);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: var(--font-xs);
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Title expandido */
+    .card.expanded .title {
+      font-size: var(--font-sm);
+      white-space: normal;
+      margin-bottom: var(--space-2);
     }
 
     .meta {
-      font-size: 0.9rem;
-      color: #ccc;
-      margin-bottom: 0.5rem;
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-1);
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 0.5px;
+      opacity: 0.9;
+      line-height: 1.1;
+    }
+
+    /* Meta expandido */
+    .card.expanded .meta {
+      font-size: var(--font-xs);
+      margin-bottom: var(--space-2);
+    }
+
+    /* Quick status indicator */
+    .status-indicator {
+      position: absolute;
+      top: var(--space-1);
+      right: var(--space-1);
+      width: 8px;
+      height: 8px;
+      border-radius: 0;
+      background: var(--red-error);
+      box-shadow: var(--glow-soft);
+      z-index: 5;
+    }
+
+    .card.seen .status-indicator {
+      background: var(--green-terminal);
+      animation: pulse 2s infinite;
     }
 
     .chips {
-      margin-bottom: 0.5rem;
+      margin-bottom: var(--space-1);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+    }
+
+    /* Chips en diseño compacto */
+    .card:not(.expanded) .chips {
+      display: none; /* Ocultar en vista compacta */
+    }
+
+    /* Actions compactas */
+    .actions {
+      display: none; /* Solo en expandida */
+    }
+
+    .card.expanded .actions {
+      display: flex;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+      flex-wrap: wrap;
+    }
+
+    /* Progress bar rediseñada */
+    .progress {
+      height: 4px;
+      background: var(--bg-screen);
+      border: 1px solid var(--amber-dim);
+      overflow: hidden;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 3;
+    }
+
+    /* Progress en card expandida */
+    .card.expanded .progress {
+      position: relative;
+      height: 6px;
+      margin-top: var(--space-2);
+    }
+
+    .bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--amber-primary), var(--amber-bright));
+      transition: width 0.5s ease;
+      box-shadow: 0 0 5px var(--amber-glow);
+    }
+
+    /* Progress bar animation */
+    .bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.3) 2px,
+        rgba(255, 255, 255, 0.3) 4px
+      );
+      animation: progressScanlines 1s linear infinite;
+    }
+
+    @keyframes progressScanlines {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     .chip {
       display: inline-block;
-      background: #333;
-      padding: 0.2rem 0.5rem;
-      margin-right: 0.5rem;
-      border-radius: 0;
-      font-size: 0.8rem;
-      color: #ffb000;
-      border: 1px solid #ffb000;
+      background: linear-gradient(135deg, var(--bg-screen), var(--bg-monitor));
+      padding: var(--space-1) var(--space-2);
+      margin-right: var(--space-2);
+      border-radius: 0; /* Terminal retro */
+      font-size: var(--font-xs);
+      color: var(--text-primary);
+      border: 1px solid var(--amber-dim);
+      font-family: 'Share Tech Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      transition: all var(--transition-fast);
+    }
+
+    .chip::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 1px,
+        rgba(255, 176, 0, 0.1) 1px,
+        rgba(255, 176, 0, 0.1) 2px
+      );
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      pointer-events: none;
     }
 
     .chip.clickable {
       cursor: pointer;
-      transition: all 0.3s;
+      border-color: var(--amber-primary);
     }
 
     .chip.clickable:hover {
-      background: #ffb000;
-      color: #000;
+      background: linear-gradient(135deg, var(--amber-primary), var(--amber-dark));
+      color: var(--bg-terminal);
       transform: translateY(-1px);
+      box-shadow: var(--glow-soft);
+      text-shadow: none;
+    }
+
+    .chip.clickable:hover::before {
+      opacity: 1;
     }
 
     .chip.active {
-      background: #ffb000;
-      color: #000;
-      border-color: #ffb000;
+      background: linear-gradient(135deg, var(--amber-bright), var(--amber-primary));
+      color: var(--bg-terminal);
+      border-color: var(--amber-bright);
+      box-shadow: var(--glow-medium);
+      text-shadow: none;
     }
 
     .genre-filter-indicator {
@@ -542,27 +1247,65 @@
       color: #ff4444;
     }
 
-    /* Estilos para toasts */
+    /* Toasts retro cyberpunk mejorados */
     .toast {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 1rem 1.5rem;
-      border-radius: 0;
-      border: 2px solid #ffb000;
-      background: #222;
-      color: #ffb000;
-      font-family: inherit;
-      font-size: 0.9rem;
-      z-index: 10000;
+      top: var(--space-4);
+      right: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      border-radius: 0; /* Terminal retro */
+      border: var(--border-normal) solid var(--amber-primary);
+      background: linear-gradient(135deg, var(--bg-monitor), var(--bg-screen));
+      color: var(--text-primary);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: var(--font-sm);
+      z-index: var(--z-toast);
       opacity: 0;
-      transform: translateX(100%);
-      transition: all 0.3s ease;
+      transform: translateX(400px);
+      transition: all var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: var(--space-2);
       max-width: 400px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      box-shadow: var(--glow-medium), var(--shadow-terminal);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Efectos CRT en toast */
+    .toast::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(255, 176, 0, 0.1) 1px,
+        rgba(255, 176, 0, 0.1) 2px
+      );
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* Barra de progreso automático */
+    .toast::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: currentColor;
+      animation: toastProgress 3s linear;
+      z-index: 1;
     }
 
     .toast.show {
@@ -571,34 +1314,46 @@
     }
 
     .toast-success {
-      border-color: #0f0;
-      color: #0f0;
+      border-color: var(--green-terminal);
+      color: var(--green-terminal);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), var(--shadow-terminal);
     }
 
     .toast-error {
-      border-color: #f44;
-      color: #f44;
+      border-color: var(--red-error);
+      color: var(--red-error);
+      box-shadow: 0 0 20px rgba(255, 7, 58, 0.3), var(--shadow-terminal);
     }
 
     .toast-info {
-      border-color: #ffb000;
-      color: #ffb000;
+      border-color: var(--amber-primary);
+      color: var(--amber-primary);
+      box-shadow: var(--glow-medium), var(--shadow-terminal);
     }
 
     .toast-close {
       background: none;
       border: none;
       color: inherit;
-      font-size: 1.2rem;
+      font-size: var(--font-lg);
       cursor: pointer;
       padding: 0;
       margin-left: auto;
       opacity: 0.7;
-      transition: opacity 0.2s;
+      transition: opacity var(--transition-fast);
+      text-shadow: var(--glow-neon);
+      z-index: 2;
     }
 
     .toast-close:hover {
       opacity: 1;
+      transform: scale(1.1);
+    }
+
+    /* Animación para progress bar de toast */
+    @keyframes toastProgress {
+      from { width: 100%; }
+      to { width: 0%; }
     }
 
     /* Estilos para filtros de género en biblioteca */
@@ -650,58 +1405,202 @@
       padding: 0.3rem 0.8rem;
     }
 
-    /* Estilos para panel de estadísticas */
+    /* Panel de estadísticas colapsable retro */
     .stats-panel {
-      background: linear-gradient(135deg, #111, #222, #111);
-      border: 2px solid #ffb000;
-      border-radius: 10px;
-      padding: 1.5rem;
-      margin: 1rem 0;
-      box-shadow: 0 0 15px rgba(255, 176, 0, 0.3);
+      background: linear-gradient(135deg, var(--bg-monitor), var(--bg-screen), var(--bg-monitor));
+      border: var(--border-thick) solid var(--amber-primary);
+      border-radius: 0; /* Terminal retro */
+      padding: 0;
+      margin: var(--space-3) 0;
+      box-shadow: var(--glow-medium), var(--shadow-terminal);
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition-normal);
     }
 
-    .stats-panel h3 {
-      color: #ffb000;
-      margin: 0 0 1rem 0;
-      font-size: 1.3rem;
-      text-align: center;
-      text-shadow: 0 0 10px #ffb000;
+    /* Efectos CRT en panel */
+    .stats-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 176, 0, 0.05) 2px,
+        rgba(255, 176, 0, 0.05) 4px
+      );
+      pointer-events: none;
+      opacity: 0.6;
+      z-index: 1;
+    }
+
+    /* Header del panel con botón de colapsar */
+    .stats-header {
+      background: linear-gradient(90deg, var(--amber-primary), var(--amber-dark));
+      color: var(--bg-terminal);
+      padding: var(--space-2) var(--space-3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      position: relative;
+      z-index: 2;
+      border-bottom: var(--border-normal) solid var(--amber-bright);
+    }
+
+    .stats-header:hover {
+      background: linear-gradient(90deg, var(--amber-bright), var(--amber-primary));
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .stats-title {
+      color: var(--bg-terminal);
+      margin: 0;
+      font-size: var(--font-lg);
+      font-family: 'Share Tech Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: bold;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Botón de colapsar retro */
+    .stats-toggle {
+      background: none;
+      border: var(--border-normal) solid var(--bg-terminal);
+      color: var(--bg-terminal);
+      padding: var(--space-1) var(--space-2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--font-sm);
+      font-weight: bold;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-toggle::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 0, 0, 0.3),
+        transparent
+      );
+      transition: left var(--transition-normal);
+    }
+
+    .stats-toggle:hover::before {
+      left: 100%;
+    }
+
+    .stats-toggle:hover {
+      background: rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+    }
+
+    /* Contenido del panel */
+    .stats-content {
+      padding: var(--space-3);
+      background: linear-gradient(135deg, var(--bg-terminal), var(--bg-monitor));
+      position: relative;
+      z-index: 2;
+      transition: all var(--transition-normal);
+      overflow: hidden;
+    }
+
+    /* Estado colapsado */
+    .stats-panel.collapsed .stats-content {
+      max-height: 0;
+      padding: 0 var(--space-3);
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    /* Animación de colapsar/expandir */
+    .stats-panel:not(.collapsed) .stats-content {
+      max-height: 1000px;
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-2);
     }
 
     .stat-item {
-      background: #333;
-      border: 1px solid #ffb000;
-      border-radius: 8px;
-      padding: 1rem;
+      background: linear-gradient(135deg, var(--bg-screen), var(--bg-monitor));
+      border: var(--border-normal) solid var(--amber-dim);
+      border-radius: 0; /* Terminal retro */
+      padding: var(--space-3);
       text-align: center;
-      transition: transform 0.3s;
+      transition: all var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Efecto scanlines en stat-item */
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 1px,
+        rgba(255, 176, 0, 0.1) 1px,
+        rgba(255, 176, 0, 0.1) 2px
+      );
+      opacity: 0;
+      transition: opacity var(--transition-normal);
+      pointer-events: none;
     }
 
     .stat-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 176, 0, 0.2);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: var(--glow-soft);
+      border-color: var(--amber-primary);
+    }
+
+    .stat-item:hover::before {
+      opacity: 1;
     }
 
     .stat-number {
-      font-size: 2rem;
+      font-size: var(--font-3xl);
       font-weight: bold;
-      color: #ffb000;
-      text-shadow: 0 0 10px #ffb000;
+      color: var(--text-primary);
+      text-shadow: var(--glow-neon);
       display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: var(--space-1);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
     }
 
     .stat-label {
-      color: #ccc;
-      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-size: var(--font-xs);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      font-family: 'Share Tech Mono', monospace;
+      opacity: 0.9;
     }
 
     .stat-item.warning .stat-number {
@@ -892,81 +1791,157 @@
       }
     }
 
-    /* Modal retro */
+    /* Modal retro cyberpunk mejorado */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
+      z-index: var(--z-modal);
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(2px);
-      overflow-y: auto; /* Permitir scroll */
-      padding: 20px 0; /* Espacio arriba y abajo */
+      background-color: var(--bg-overlay);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      overflow-y: auto;
+      padding: var(--space-4) 0;
+      animation: modalFadeIn var(--transition-normal) ease;
     }
 
     .modal-content {
-      background-color: #111;
-      margin: 20px auto;
-      padding: 20px;
-      border: 5px solid #ffb000;
-      border-radius: 10px;
+      background: linear-gradient(135deg, var(--bg-monitor), var(--bg-screen), var(--bg-monitor));
+      margin: var(--space-4) auto;
+      padding: var(--space-4);
+      border: var(--border-thick) solid var(--amber-primary);
+      border-radius: 0; /* Terminal retro */
       width: 90%;
       max-width: 400px;
-      max-height: 80vh; /* Limitar altura máxima */
-      overflow-y: auto; /* Scroll interno si es necesario */
-      box-shadow: 
-        0 0 20px rgba(255, 176, 0, 0.5),
-        inset 0 0 20px rgba(255, 176, 0, 0.1);
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--glow-strong), inset 0 0 20px var(--amber-dim);
       font-family: 'JetBrains Mono', monospace;
-      color: #ffb000;
-      text-shadow: 0 0 5px #ffb000;
+      color: var(--text-primary);
+      text-shadow: var(--glow-neon);
       position: relative;
+      animation: modalSlideIn var(--transition-normal) ease;
     }
 
-    /* Botón de cerrar en la esquina */
+    /* Efectos CRT en modal */
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(255, 176, 0, 0.05) 1px,
+        rgba(255, 176, 0, 0.05) 3px
+      );
+      pointer-events: none;
+      opacity: 0.6;
+      z-index: 1;
+    }
+
+    /* Barra de progreso superior en modal */
+    .modal-content::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(
+        90deg,
+        var(--cyan-neon),
+        var(--amber-primary),
+        var(--magenta-neon)
+      );
+      animation: modalProgressBar 3s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    /* Botón de cerrar mejorado */
     .modal-close {
       position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 24px;
+      top: var(--space-2);
+      right: var(--space-3);
+      font-size: var(--font-2xl);
       font-weight: bold;
-      color: #ffb000;
+      color: var(--text-primary);
       cursor: pointer;
       background: none;
       border: none;
       padding: 0;
       line-height: 1;
+      transition: all var(--transition-fast);
+      z-index: 3;
+      text-shadow: var(--glow-neon);
     }
 
     .modal-close:hover {
-      color: #ff4444;
-      text-shadow: 0 0 10px #ff4444;
+      color: var(--red-error);
+      text-shadow: 0 0 10px var(--red-error);
+      transform: scale(1.1);
+    }
+
+    /* Animaciones de modal */
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes modalProgressBar {
+      0%, 100% { transform: translateX(-100%); }
+      50% { transform: translateX(0); }
     }
 
     .modal-content h3 {
       margin-top: 0;
       text-align: center;
-      border-bottom: 2px solid #ffb000;
-      padding-bottom: 10px;
+      border-bottom: var(--border-normal) solid var(--amber-primary);
+      padding-bottom: var(--space-2);
+      color: var(--text-bright);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      z-index: 2;
     }
 
     .modal-content label {
       display: block;
-      margin-top: 15px;
-      margin-bottom: 5px;
+      margin-top: var(--space-3);
+      margin-bottom: var(--space-1);
       font-weight: bold;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: var(--font-sm);
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 2;
     }
 
     .modal-content input,
     .modal-content textarea {
       width: 100%;
-      padding: 8px;
-      background-color: #222;
-      border: 1px solid #ffb000;
-      color: #ffb000;
+      padding: var(--space-2);
+      background: linear-gradient(135deg, var(--bg-terminal), var(--bg-screen));
+      border: var(--border-normal) solid var(--amber-dim);
+      color: var(--text-primary);
       font-family: inherit;
       border-radius: 0;
       box-sizing: border-box;
@@ -1177,54 +2152,59 @@
     <section id="librarySection">
       <h2>Mi Biblioteca</h2>
       
-      <!-- Panel de Estadísticas -->
+      <!-- Panel de Estadísticas Colapsable -->
       <div id="statsPanel" class="stats-panel">
-        <h3>📊 Estadísticas de tu Biblioteca</h3>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span id="totalMoviesCount" class="stat-number">0</span>
-            <span class="stat-label">Películas</span>
-          </div>
-          <div class="stat-item">
-            <span id="totalSeriesCount" class="stat-number">0</span>
-            <span class="stat-label">Series</span>
-          </div>
-          <div class="stat-item">
-            <span id="seenCount" class="stat-number">0</span>
-            <span class="stat-label">Vistas</span>
-          </div>
-          <div class="stat-item">
-            <span id="pendingCount" class="stat-number">0</span>
-            <span class="stat-label">Pendientes</span>
-          </div>
-          <div class="stat-item">
-            <span id="totalEpisodesCount" class="stat-number">0</span>
-            <span class="stat-label">Episodios Totales</span>
-          </div>
-          <div class="stat-item">
-            <span id="seenEpisodesCount" class="stat-number">0</span>
-            <span class="stat-label">Episodios Vistos</span>
-          </div>
-          <div class="stat-item">
-            <span id="pendingEpisodesCount" class="stat-number">0</span>
-            <span class="stat-label">Episodios Pendientes</span>
-          </div>
-          <div class="stat-item">
-            <span id="episodesPercentage" class="stat-number">0%</span>
-            <span class="stat-label">Progreso Episodios</span>
-            <div class="progress-bar">
-              <div id="episodesProgressFill" class="progress-fill" style="width: 0%"></div>
+        <div class="stats-header" onclick="toggleStatsPanel()">
+          <h3 class="stats-title">📊 Estadísticas de tu Biblioteca</h3>
+          <button class="stats-toggle" id="statsToggleBtn">OCULTAR</button>
+        </div>
+        <div class="stats-content">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span id="totalMoviesCount" class="stat-number">0</span>
+              <span class="stat-label">Películas</span>
             </div>
-          </div>
-          <div class="stat-item">
-            <span id="searchResultsCount" class="stat-number">0</span>
-            <span class="stat-label">Últimos Resultados</span>
-          </div>
-          <div class="stat-item">
-            <span id="completionPercentage" class="stat-number">0%</span>
-            <span class="stat-label">Progreso General</span>
-            <div class="progress-bar">
-              <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            <div class="stat-item">
+              <span id="totalSeriesCount" class="stat-number">0</span>
+              <span class="stat-label">Series</span>
+            </div>
+            <div class="stat-item">
+              <span id="seenCount" class="stat-number">0</span>
+              <span class="stat-label">Vistas</span>
+            </div>
+            <div class="stat-item">
+              <span id="pendingCount" class="stat-number">0</span>
+              <span class="stat-label">Pendientes</span>
+            </div>
+            <div class="stat-item">
+              <span id="totalEpisodesCount" class="stat-number">0</span>
+              <span class="stat-label">Episodios Totales</span>
+            </div>
+            <div class="stat-item">
+              <span id="seenEpisodesCount" class="stat-number">0</span>
+              <span class="stat-label">Episodios Vistos</span>
+            </div>
+            <div class="stat-item">
+              <span id="pendingEpisodesCount" class="stat-number">0</span>
+              <span class="stat-label">Episodios Pendientes</span>
+            </div>
+            <div class="stat-item">
+              <span id="episodesPercentage" class="stat-number">0%</span>
+              <span class="stat-label">Progreso Episodios</span>
+              <div class="progress-bar">
+                <div id="episodesProgressFill" class="progress-fill" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <span id="searchResultsCount" class="stat-number">0</span>
+              <span class="stat-label">Últimos Resultados</span>
+            </div>
+            <div class="stat-item">
+              <span id="completionPercentage" class="stat-number">0%</span>
+              <span class="stat-label">Progreso General</span>
+              <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1619,9 +2599,56 @@
     }
   }
 
+  // Función para colapsar/expandir el panel de estadísticas con efecto 80toso
+  function toggleStatsPanel() {
+    const statsPanel = $('#statsPanel');
+    const statsContent = statsPanel.querySelector('.stats-content');
+    const toggleBtn = $('#statsToggleBtn');
+    
+    // Verificar si está colapsado
+    const isCollapsed = statsPanel.classList.contains('collapsed');
+    
+    if (isCollapsed) {
+      // Expandir
+      statsPanel.classList.remove('collapsed');
+      toggleBtn.textContent = 'OCULTAR';
+      
+      // Animar la expansión
+      statsContent.style.display = 'block';
+      statsContent.style.height = '0px';
+      requestAnimationFrame(() => {
+        statsContent.style.height = 'auto';
+        const height = statsContent.offsetHeight + 'px';
+        statsContent.style.height = '0px';
+        requestAnimationFrame(() => {
+          statsContent.style.height = height;
+        });
+      });
+    } else {
+      // Colapsar
+      statsPanel.classList.add('collapsed');
+      toggleBtn.textContent = 'MOSTRAR';
+      
+      // Animar el colapso
+      const height = statsContent.offsetHeight + 'px';
+      statsContent.style.height = height;
+      requestAnimationFrame(() => {
+        statsContent.style.height = '0px';
+      });
+      
+      // Ocultar después de la animación
+      setTimeout(() => {
+        if (statsPanel.classList.contains('collapsed')) {
+          statsContent.style.display = 'none';
+        }
+      }, 300);
+    }
+  }
+
   // Hacer las funciones globales
   window.filterLibraryByGenre = filterLibraryByGenre;
   window.clearLibraryGenreFilter = clearLibraryGenreFilter;
+  window.toggleStatsPanel = toggleStatsPanel;
 
   function posterUrl(poster) {
     // Verificar si la URL parece válida
@@ -1692,31 +2719,54 @@
       const isSeries = item.type === 'series';
       const seenPct = isSeries ? (item.totals?.total? Math.round((item.totals.seen/item.totals.total)*100):0) : (item.seen?100:0);
       const ratingInfo = item.rating ? `<div class="meta">⭐ ${item.rating} (${item.votes} votos)</div>` : '';
+      const viewInfo = item.seen && item.userRating ? `<div class="meta">Mi calificación: ⭐ ${item.userRating}/10</div>` : '';
+      const dateInfo = item.seen && item.viewDate ? `<div class="meta">Vista el: ${new Date(item.viewDate).toLocaleDateString()}</div>` : '';
+      const commentInfo = item.seen && item.userComment ? `<div class="meta">Comentario: ${item.userComment}</div>` : '';
+      
       const card = document.createElement('div');
-      card.className = 'card';
+      card.className = `card ${item.seen ? 'seen' : ''}`;
+      card.dataset.id = item.imdbID;
+      
       card.innerHTML = `
-        <img class="poster" src="${posterUrl(item.poster)}" alt="${item.title}">
+        <div class="poster-container">
+          <img class="poster" src="${posterUrl(item.poster)}" alt="${item.title}">
+          <div class="poster-overlay" data-action="toggleMovie" data-id="${item.imdbID}"></div>
+        </div>
+        <div class="status-indicator"></div>
         <div class="info">
-          <div class="title">${item.title}</div>
-          <div class="meta">${item.year} · ${item.type}</div>
-          ${ratingInfo}
-          ${item.seen && item.userRating ? `<div class="meta">Mi calificación: ⭐ ${item.userRating}/10</div>` : ''}
-          ${item.seen && item.viewDate ? `<div class="meta">Vista el: ${new Date(item.viewDate).toLocaleDateString()}</div>` : ''}
-          ${item.seen && item.userComment ? `<div class="meta">Comentario: ${item.userComment}</div>` : ''}
-          <div class="chips">${genreChips(item.genre)}</div>
-          <div class="actions">
-            ${isSeries ? `
-              <button class="btn" data-action="episodes" data-id="${item.imdbID}">Gestionar capítulos</button>
-              <button class="btn warn" data-action="refresh" data-id="${item.imdbID}">Actualizar lista de episodios</button>
-            ` : `
-              <button class="btn ok" data-action="toggleMovie" data-id="${item.imdbID}">${item.seen? 'Marcada como vista ✅':'Marcar como vista'}</button>
-            `}
-            <button class="btn" data-action="remove" data-id="${item.imdbID}">Quitar</button>
+          <div class="info-basic">
+            <div class="title">${item.title}</div>
+            <div class="meta">${item.year} · ${item.type.toUpperCase()}</div>
+            ${ratingInfo}
           </div>
-          <div class="progress" title="${seenPct}% visto">
-            <div class="bar" style="width:${seenPct}%"></div>
+          <div class="info-extended">
+            ${viewInfo}
+            ${dateInfo}
+            ${commentInfo}
+            <div class="chips">${genreChips(item.genre)}</div>
+            <div class="actions">
+              ${isSeries ? `
+                <button class="btn" data-action="episodes" data-id="${item.imdbID}">EPISODIOS</button>
+                <button class="btn warn" data-action="refresh" data-id="${item.imdbID}">ACTUALIZAR</button>
+              ` : `
+                <button class="btn ok" data-action="toggleMovie" data-id="${item.imdbID}">${item.seen? 'VISTA ✅':'MARCAR VISTA'}</button>
+              `}
+              <button class="btn" data-action="remove" data-id="${item.imdbID}">ELIMINAR</button>
+            </div>
           </div>
+        </div>
+        <div class="progress" title="${seenPct}% visto">
+          <div class="bar" style="width:${seenPct}%"></div>
         </div>`;
+      
+      // Agregar click handler para expandir/contraer
+      card.addEventListener('click', (e) => {
+        // No expandir si se clickea en overlay o botones
+        if (e.target.matches('.poster-overlay, .btn, [data-action]')) {
+          return;
+        }
+        card.classList.toggle('expanded');
+      });
       
       cont.appendChild(card);
     });
