@@ -320,19 +320,6 @@ npx vercel
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
 
-## � Roadmap y Futuras Funcionalidades
-
-- [ ] **Sistema de favoritos** con categorías personalizadas
-- [ ] **Listas personalizadas** ("Para ver", "Favoritos", etc.)
-- [ ] **Calificaciones externas** (IMDb, Rotten Tomatoes)
-- [ ] **Recomendaciones** basadas en tu biblioteca
-- [ ] **Exportar/Importar** biblioteca en JSON/CSV
-- [ ] **Modo oscuro/claro** personalizable
-- [ ] **Notificaciones** para nuevas temporadas
-- [ ] **Seguimiento de amigos** y bibliotecas compartidas
-- [ ] **Estadísticas avanzadas** con gráficos
-- [ ] **Integración** con servicios de streaming
-
 ## �🙏 Agradecimientos
 
 - [OMDB API](https://www.omdbapi.com/) por proporcionar los datos
