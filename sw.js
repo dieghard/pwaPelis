@@ -1,12 +1,27 @@
-const CACHE_NAME = 'biblioteca-pwa-v1.0.1';
-const STATIC_CACHE = 'static-v1.0.1';
-const DYNAMIC_CACHE = 'dynamic-v1.0.1';
+const CACHE_NAME = 'biblioteca-pwa-v1.1.0';
+const STATIC_CACHE = 'static-v1.1.0';
+const DYNAMIC_CACHE = 'dynamic-v1.1.0';
 
 // Recursos estáticos para cachear
 const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './browserconfig.xml',
+  // Iconos principales para cachear
+  './assets/android/android-launchericon-192-192.png',
+  './assets/android/android-launchericon-512-512.png',
+  './assets/ios/180.png',
+  './assets/ios/152.png',
+  './assets/ios/144.png',
+  './assets/ios/120.png',
+  './assets/ios/114.png',
+  './assets/ios/76.png',
+  './assets/ios/72.png',
+  './assets/ios/60.png',
+  './assets/ios/57.png',
+  './assets/ios/32.png',
+  './assets/ios/16.png',
   'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Share+Tech+Mono&display=swap'
 ];
 
